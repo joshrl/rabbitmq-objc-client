@@ -143,6 +143,13 @@
          completionHandler:handler];
 }
 
+- (RMQConsumer *)blockingSubscribe:(RMQBasicConsumeOptions)options
+                           handler:(RMQConsumerDeliveryHandler)handler {
+    RMQConsumer *consumer = [self subscribe:options handler:handler];
+    [self.channel blockingWaitOn:RMQBasicConsume.class];
+    return consumer;
+}
+
 - (RMQConsumer *)subscribe:(RMQBasicConsumeOptions)options
                    handler:(RMQConsumerDeliveryHandler)handler {
     return [self.channel basicConsume:self.name
